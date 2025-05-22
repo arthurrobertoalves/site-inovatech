@@ -24,6 +24,7 @@ header {
     display: flex;
     list-style: none;
     gap: var(--space-xl);
+
 }
 
 .nav-item a {
@@ -31,6 +32,7 @@ header {
     font-weight: 500;
     padding: var(--space-xs) 0;
     position: relative;
+    gap: 10px;
 }
 
 .nav-item a::after {
