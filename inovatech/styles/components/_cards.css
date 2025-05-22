@@ -1,0 +1,36 @@
+.parceiro-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: var(--border-radius-lg);
+    gap: var(--space-md);
+    width: 100%;
+    max-width: 300px;
+    padding: var(--space-lg);
+    background-color: white;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s ease;
+}
+
+.parceiro-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.parceiro-image {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    object-fit: contain;
+}
+
+.parceiro-title {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+}
+
+.parceiro-description {
+    color: var(--text-light);
+    text-align: center;
+    font-size: 0.9rem;
+}
