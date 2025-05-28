@@ -1,6 +1,7 @@
 /**
  * InovaTech - Main JavaScript
  * Modularizado e otimizado para performance
+ * Atualizado com correção para scroll mobile
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -66,20 +67,23 @@ function initNavigation({ scrollOffset, scrollThreshold }) {
 }
 
 /**
- * Carrossel de parceiros
+ * Carrossel de parceiros - Atualizado com gestos otimizados para mobile
  */
 function initCarousel() {
     const carrossel = document.querySelector('.parceiros-carrossel');
     if (!carrossel) return;
     
     let isDragging = false;
-    let startPos = 0;
+    let startPos = { x: 0, y: 0 };
     let currentScroll = 0;
     
     // Eventos de mouse/touch
     const handleStart = (e) => {
         isDragging = true;
-        startPos = getPosition(e);
+        startPos = {
+            x: getPosition(e).x,
+            y: getPosition(e).y
+        };
         currentScroll = carrossel.scrollLeft;
         carrossel.style.cursor = 'grabbing';
         carrossel.style.scrollBehavior = 'auto';
@@ -87,11 +91,17 @@ function initCarousel() {
     
     const handleMove = (e) => {
         if (!isDragging) return;
-        e.preventDefault();
         
-        const x = getPosition(e);
-        const walk = (x - startPos) * 2;
-        carrossel.scrollLeft = currentScroll - walk;
+        const currentPos = getPosition(e);
+        const dx = currentPos.x - startPos.x;
+        const dy = currentPos.y - startPos.y;
+        
+        // Verifica se o movimento é predominantemente horizontal
+        if (Math.abs(dx) > Math.abs(dy)) {
+            e.preventDefault();
+            const walk = dx * 2;
+            carrossel.scrollLeft = currentScroll - walk;
+        }
     };
     
     const handleEnd = () => {
@@ -100,13 +110,13 @@ function initCarousel() {
         carrossel.style.scrollBehavior = 'smooth';
     };
     
-    // Adiciona event listeners
+    // Adiciona event listeners com opção passive false para touchmove
     carrossel.addEventListener('mousedown', handleStart);
-    carrossel.addEventListener('touchstart', handleStart);
+    carrossel.addEventListener('touchstart', handleStart, { passive: true });
     carrossel.addEventListener('mousemove', handleMove);
-    carrossel.addEventListener('touchmove', handleMove);
+    carrossel.addEventListener('touchmove', handleMove, { passive: false });
     carrossel.addEventListener('mouseup', handleEnd);
-    carrossel.addEventListener('touchend', handleEnd);
+    carrossel.addEventListener('touchend', handleEnd, { passive: true });
     carrossel.addEventListener('mouseleave', handleEnd);
 }
 
@@ -114,7 +124,10 @@ function initCarousel() {
  * Utilitários
  */
 function initCurrentYear() {
-    document.getElementById('current-year').textContent = new Date().getFullYear();
+    const yearElement = document.getElementById('current-year');
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+    }
 }
 
 function throttle(fn, wait) {
@@ -128,5 +141,8 @@ function throttle(fn, wait) {
 }
 
 function getPosition(e) {
-    return e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+    return {
+        x: e.type.includes('touch') ? e.touches[0].clientX : e.clientX,
+        y: e.type.includes('touch') ? e.touches[0].clientY : e.clientY
+    };
 }

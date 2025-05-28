@@ -1,22 +1,15 @@
-/* Base */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import 'base/_reset.css';
 @import 'base/_variables.css';
 @import 'base/_typography.css';
-
-/* Layouts */
 @import 'layouts/_header.css';
 @import 'layouts/_footer.css';
-
-/* Components */
 @import 'components/_buttons.css';
 @import 'components/_cards.css';
 @import 'components/_navbar.css';
-
-/* Sections */
 @import 'sections/home.css';
 @import 'sections/parceiros.css';
-
 @import 'styles.css';
+@import 'components/about.css';
 
 

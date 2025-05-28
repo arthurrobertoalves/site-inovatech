@@ -50,6 +50,7 @@
 
 .nav-item {
     position: relative;
+    padding: 6px;
 }
 
 .nav-link {
