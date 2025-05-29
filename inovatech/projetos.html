@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LumenVia - Projetos</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header (usando o mesmo do seu exemplo) -->
+    <header class="header">
+    <div class="container">
+            <nav class="navbar" aria-label="Navegação principal">
+                <a href="index.html" class="navbar-brand">
+                    <img src="img/icone-removebg-preview_resized.png" alt="Inova Tech" width="auto" height="auto"
+                        loading="eager">
+                </a>
+
+                <button class="navbar-toggler" aria-label="Menu" aria-expanded="false" aria-controls="navbarNav">
+                    <span class="toggler-icon"></span>
+                    <span class="toggler-icon"></span>
+                    <span class="toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a href="projetos.html" class="nav-link active">Projetos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="inicio.html" class="nav-link">Início</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="parceiros.html" class="nav-link">Parceiros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="quemsomos.html" class="nav-link">Quem Somos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#contato" class="nav-link">Contato</a>
+                        </li>
+                    </ul>
+
+                    <div class="navbar-actions">
+                        <a href="#doar" class="btn btn-primary">Doe Agora</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Seção Hero para Projetos -->
+        <section class="projects-hero" style="background: linear-gradient(rgba(27, 94, 32, 0.9), rgba(27, 94, 32, 0.8))">
+            <div class="container">
+                <h1>Nossos <span>Projetos</span> Inovadores</h1>
+                <p class="hero-subtitle">Tecnologia sustentável para um futuro mais brilhante</p>
+            </div>
+        </section>
+
+        <!-- Seção de Cards de Projetos -->
+        <section class="projects-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Soluções LumenVia</h2>
+                    <p class="section-subtitle">Conheça nossas iniciativas que combinam tecnologia e sustentabilidade</p>
+                    <div class="section-divider"></div>
+                </div>
+
+                <div class="projects-grid">
+                    <!-- Card 1 - Otimização de Rotas -->
+                    <div class="project-card">
+                        <div class="card-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <h3>Otimização de Rotas para Geração de Energia</h3>
+                        <p>Sistema inteligente que sugere rotas maximizando a geração de energia piezoelétrica e solar.</p>
+                        <button class="btn btn-primary project-modal-btn" data-modal="modal1">Saiba Mais</button>
+                    </div>
+
+                    <!-- Card 2 - Painel de Monitoramento -->
+                    <div class="project-card">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Painel de Monitoramento Offline</h3>
+                        <p>Dashboard em tempo real mostrando status dos postes e energia gerada.</p>
+                        <button class="btn btn-primary project-modal-btn" data-modal="modal2">Saiba Mais</button>
+                    </div>
+
+                    <!-- Card 3 - Quiz Interativo -->
+                    <div class="project-card">
+                        <div class="card-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <h3>Quiz Interativo - Pegada de Luz</h3>
+                        <p>Teste seu conhecimento sobre consumo energético e receba dicas personalizadas.</p>
+                        <button class="btn btn-primary project-modal-btn" data-modal="modal3">Saiba Mais</button>
+                    </div>
+
+                    <!-- Card 4 - IA e IoT -->
+                    <div class="project-card">
+                        <div class="card-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Inteligência Artificial e IoT</h3>
+                        <p>Soluções preditivas para alocação estratégica de recursos energéticos.</p>
+                        <button class="btn btn-primary project-modal-btn" data-modal="modal4">Saiba Mais</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modais dos Projetos -->
+        <!-- Modal 1 - Otimização de Rotas -->
+        <div id="modal1" class="project-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Otimização de Rotas para Geração de Energia</h2>
+                <div class="modal-body">
+                    <div class="modal-image">
+                        <img src="img/route-optimization.jpg" alt="Otimização de Rotas">
+                    </div>
+                    <div class="modal-text">
+                        <p>O sistema Via Lumen sugere rotas que maximizam a geração de energia através de:</p>
+                        <ul>
+                            <li>Integração com APIs de mapas (Google Maps/OpenStreetMap)</li>
+                            <li>Priorização de vias com maior tráfego (energia piezoelétrica)</li>
+                            <li>Roteamento por áreas com maior incidência solar</li>
+                            <li>Destaque visual para rotas mais sustentáveis</li>
+                            <li>Estimativa de energia gerada por percurso</li>
+                        </ul>
+                        <div class="tech-tags">
+                            <span>API Integration</span>
+                            <span>Energy Mapping</span>
+                            <span>Sustainability</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 2 - Painel de Monitoramento -->
+        <div id="modal2" class="project-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Painel de Monitoramento Offline</h2>
+                <div class="modal-body">
+                    <div class="modal-image">
+                        <img src="img/dashboard.jpg" alt="Painel de Monitoramento">
+                    </div>
+                    <div class="modal-text">
+                        <p>Simulação de um painel de controle com dashboard em JavaScript que exibe:</p>
+                        <ul>
+                            <li>Status operacional dos postes ("Poste #12 - Falha detectada!")</li>
+                            <li>Botão fictício para "avisar a equipe de manutenção"</li>
+                            <li>Linha do tempo de energia gerada</li>
+                            <li>Bolsas financiadas pelo projeto</li>
+                            <li>Impacto social mensurado</li>
+                        </ul>
+                        <div class="tech-tags">
+                            <span>JavaScript</span>
+                            <span>Data Visualization</span>
+                            <span>Real-time Monitoring</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 3 - Quiz Interativo -->
+        <div id="modal3" class="project-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Quiz Interativo - Pegada de Luz</h2>
+                <div class="modal-body">
+                    <div class="quiz-container">
+                        <div class="quiz-progress">
+                            <div class="progress-bar"></div>
+                            <span class="progress-text">Pergunta 1 de 5</span>
+                        </div>
+                        <div class="quiz-question">
+                            <h3>Quantas lâmpadas estão acesas em sua casa agora?</h3>
+                            <div class="quiz-options">
+                                <button class="quiz-option">1-2</button>
+                                <button class="quiz-option">3-5</button>
+                                <button class="quiz-option">6+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="quiz-description">
+                        <p>O quiz educativo avalia o consumo energético do usuário e ao final sugere:</p>
+                        <ul>
+                            <li>Como reduzir o consumo energético</li>
+                            <li>Formas de apoiar o projeto Via Lumen</li>
+                            <li>Feedback em tempo real com tecnologia de formulários inteligentes</li>
+                            <li>Comparativo com a média regional</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 4 - IA e IoT -->
+        <div id="modal4" class="project-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Inteligência Artificial e IoT</h2>
+                <div class="modal-body">
+                    <div class="modal-image">
+                        <img src="img/ai-iot.jpg" alt="IA e IoT">
+                    </div>
+                    <div class="modal-text">
+                        <p>Soluções avançadas que utilizam:</p>
+                        <ul>
+                            <li>Previsão de demanda com IA para alocação estratégica</li>
+                            <li>Sensores IoT para monitoramento em tempo real</li>
+                            <li>Transparência e controle de eficiência logística</li>
+                            <li>Integração com veículos elétricos</li>
+                            <li>Rotas com pontos de recarga otimizados</li>
+                        </ul>
+                        <div class="tech-tags">
+                            <span>Artificial Intelligence</span>
+                            <span>IoT Sensors</span>
+                            <span>Predictive Analytics</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer (usando o mesmo do seu exemplo) -->
+    <footer class="footer">
+          <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <img src="img/icone-removebg-preview_resized.png" alt="Inova Tech" class="footer-logo" width="150"
+                        height="150" loading="lazy">
+                    <p class="footer-about">Inova Tech - Soluções tecnológicas para um futuro sustentável.</p>
+
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h3 class="footer-title">Links Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Início</a></li>
+                        <li><a href="#solucoes">Soluções</a></li>
+                        <li><a href="#parceiros">Parceiros</a></li>
+                        <li><a href="#sobre">Sobre Nós</a></li>
+                        <li><a href="#contato">Contato</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3 class="footer-title">Contato</h3>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-map-marker-alt"></i> São Paulo, SP</li>
+                        <li><i class="fas fa-phone"></i> (11) 91234-5678</li>
+                        <li><i class="fas fa-envelope"></i> contato@inovatech.com</li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3 class="footer-title">Newsletter</h3>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Seu e-mail" required>
+                        <button type="submit" class="btn btn-primary">Assinar</button>
+                    </form>
+                    <p class="newsletter-text">Receba nossas novidades e conteúdos exclusivos.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year">2023</span> Inova Tech. Todos os direitos reservados.</p>
+                <div class="footer-legal">
+                    <a href="#">Política de Privacidade</a>
+                    <a href="#">Termos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts/projects.js"></script>
+</body>
+</html>

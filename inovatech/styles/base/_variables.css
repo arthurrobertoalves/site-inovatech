@@ -8,6 +8,19 @@
     --light-color: #f5f5f5;
     --text-color: #333;
     --text-light: #757575;
+       /* Adicione estas cores se não existirem */
+    --primary-darker: #1B5E20;  /* Verde mais escuro para o LumenVia */
+    --primary-dark: #2E7D32;    /* Verde padrão */
+    --primary-medium: #4CAF50;  /* Verde médio */
+    --primary-light: #81C784;   /* Verde claro */
+    --primary-lighter: #C8E6C9; /* Verde muito claro */
+    
+    /* Adicione estas se não existirem */
+    --border-radius: 8px;
+    --border-radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
     
     /* Espaçamentos */
     --space-xs: 0.5rem;
@@ -21,6 +34,22 @@
     --border-radius-lg: 16px;
     
     /* Sombras */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+:root {
+    /* Adicione estas cores se não existirem */
+    --primary-darker: #1B5E20;  /* Verde mais escuro para o LumenVia */
+    --primary-dark: #2E7D32;    /* Verde padrão */
+    --primary-medium: #4CAF50;  /* Verde médio */
+    --primary-light: #81C784;   /* Verde claro */
+    --primary-lighter: #C8E6C9; /* Verde muito claro */
+    
+    /* Adicione estas se não existirem */
+    --border-radius: 8px;
+    --border-radius-lg: 16px;
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
     --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
     --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);

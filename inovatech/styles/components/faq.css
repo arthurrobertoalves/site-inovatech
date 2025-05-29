@@ -1,0 +1,62 @@
+/* ==================== */
+/* SEÇÃO DE CONTATO RÁPIDO */
+/* ==================== */
+.quick-contact-section {
+    padding: 5rem 0;
+    background-color: var(--light-color);
+}
+
+.quick-contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-top: 2rem;
+}
+
+.quick-contact-form input,
+.quick-contact-form textarea {
+    padding: var(--space-sm);
+    border: 1px solid var(--text-light);
+    border-radius: var(--border-radius);
+    resize: none;
+}
+
+.quick-contact-form button {
+    align-self: flex-start;
+}
+
+/* ==================== */
+/* SEÇÃO DE VALORES EM DESTAQUE */
+/* ==================== */
+.values-highlight-section {
+    padding: 5rem 0;
+    background-color: #f0f0f0;
+}
+
+.values-highlight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-lg);
+    margin-top: 2rem;
+}
+
+.value-highlight {
+    background: white;
+    padding: var(--space-md);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s ease;
+}
+
+.value-highlight:hover {
+    transform: translateY(-5px);
+}
+
+/* ==================== */
+/* RESPONSIVIDADE */
+/* ==================== */
+@media (max-width: 768px) {
+    .testimonials-grid, .faq-grid, .values-highlight-grid {
+        grid-template-columns: 1fr;
+    }
+}

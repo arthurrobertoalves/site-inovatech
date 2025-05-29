@@ -144,5 +144,5 @@ function getPosition(e) {
     return {
         x: e.type.includes('touch') ? e.touches[0].clientX : e.clientX,
         y: e.type.includes('touch') ? e.touches[0].clientY : e.clientY
-    };
+    };
 }
