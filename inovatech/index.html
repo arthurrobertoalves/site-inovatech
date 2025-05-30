@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RouteMaster - Solução inteligente de otimização de rotas para carretos">
+    <title>RouteMaster | Inova Tech</title>
+    
+
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/route-master.css">
+    
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="navbar" aria-label="Navegação principal">
+                <a href="index.html" class="navbar-brand">
+                    <img src="img/icone-removebg-preview_resized.png" alt="Inova Tech" width="auto" height="auto"
+                        loading="eager">
+                </a>
+
+                <button class="navbar-toggler" aria-label="Menu" aria-expanded="false" aria-controls="navbarNav">
+                    <span class="toggler-icon"></span>
+                    <span class="toggler-icon"></span>
+                    <span class="toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a href="#parceiros" class="nav-link active">Parceiros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="inicio.html" class="nav-link">Início</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="projetos.html" class="nav-link">Projetos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="quemsomos.html" class="nav-link">Quem Somos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#contato" class="nav-link">Contato</a>
+                        </li>
+                    </ul>
+
+                    <div class="navbar-actions">
+                        <a href="#doar" class="btn btn-primary">Doe Agora</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="route-hero" aria-labelledby="route-heading">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 id="route-heading">Rotas<span>Tech</span></h1>
+                    <p class="hero-subtitle">Otimização inteligente de rotas para carretos e entregas com a <span>inovatech</span></p>
+                    <div class="hero-badges">
+                        <span class="badge"><i class="fas fa-bolt"></i> Economize até 30% de combustível</span>
+                        <span class="badge"><i class="fas fa-clock"></i> Reduza o tempo de entrega</span>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="img/route-illustration.svg" alt="Ilustração do RouteMaster" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- Route Planner Section -->
+        <section class="route-planner" aria-labelledby="planner-heading">
+            <div class="container">
+                <div class="planner-header">
+                    <h2 id="planner-heading">Planejador de <span>Rotas</span></h2>
+                    <p class="section-subtitle">Insira os endereços de entrega para otimização automática</p>
+                    <div class="section-divider"></div>
+                </div>
+
+                <div class="planner-container">
+                    <div class="input-card">
+                        <h3><i class="fas fa-map-marked-alt"></i> Informações da Rota</h3>
+                        
+                        <div class="input-group">
+                            <label for="orderCount">Quantidade de encomendas hoje:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-box-open"></i>
+                                <input type="number" id="orderCount" min="0" placeholder="Ex: 5" class="modern-input">
+                            </div>
+                        </div>
+
+                        <div id="addressInputContainer" class="address-input-container" style="display: none;">
+                            <div class="input-group">
+                                <label for="cepInput">CEP (formato: 12345-678):</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-map-pin"></i>
+                                    <input type="text" id="cepInput" placeholder="Digite o CEP" class="modern-input">
+                                </div>
+                            </div>
+                            
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="streetNumber">Número:</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-home"></i>
+                                        <input type="text" id="streetNumber" placeholder="Número" class="modern-input">
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="addressComplement">Complemento:</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                        <input type="text" id="addressComplement" placeholder="Opcional" class="modern-input">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button id="addAddress" class="btn btn-secondary">
+                                <i class="fas fa-plus-circle"></i> Adicionar Endereço
+                            </button>
+                            
+                            <div id="addressList" class="address-list"></div>
+                            
+                            <div class="action-buttons">
+                                <button id="calculateRoute" class="btn btn-primary">
+                                    <i class="fas fa-route"></i> Calcular Melhor Rota
+                                </button>
+                                <button id="clearAll" class="btn btn-outline">
+                                    <i class="fas fa-trash-alt"></i> Limpar Tudo
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="noOrdersMessage" class="no-orders-message" style="display: none;">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Você não tem encomendas para hoje! Aproveite para planejar suas rotas futuras.</p>
+                        </div>
+                    </div>
+
+                    <div class="map-card">
+                        <div class="loading" id="loadingIndicator">
+                            <div class="loading-spinner"></div>
+                            <p>Calculando a melhor rota...</p>
+                        </div>
+                        
+                        <div id="resultContainer" class="result-container">
+                            <div class="result-header">
+                                <h3><i class="fas fa-route"></i> Rota Otimizada</h3>
+                                <div class="result-meta">
+                                    <span id="distanceInfo" class="distance-info">
+                                        <i class="fas fa-road"></i> <span id="distanceText">-- km</span>
+                                    </span>
+                                    <span id="timeInfo" class="time-info">
+                                        <i class="fas fa-clock"></i> <span id="timeText">-- min</span>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div id="routeMap"></div>
+                            
+                            <div class="route-details">
+                                <div class="route-list-container">
+                                    <h4><i class="fas fa-list-ol"></i> Ordem de Entrega</h4>
+                                    <ol class="route-list" id="routeList"></ol>
+                                </div>
+                                
+                                <div class="route-actions">
+                                    <button id="openMaps" class="btn btn-primary">
+                                        <i class="fab fa-google"></i> Abrir no Google Maps
+                                    </button>
+                                    <button id="exportRoute" class="btn btn-secondary">
+                                        <i class="fas fa-file-export"></i> Exportar Rota
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="route-features" aria-labelledby="features-heading">
+            <div class="container">
+                <h2 id="features-heading">Por que usar o <span>RouteMaster</span>?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-gas-pump"></i>
+                        </div>
+                        <h3>Economia de Combustível</h3>
+                        <p>Reduza em até 30% seus gastos com combustível através de rotas otimizadas.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Entrega Mais Rápida</h3>
+                        <p>Minimize o tempo de entrega com algoritmos inteligentes de roteamento.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <h3>Integração Completa</h3>
+                        <p>Visualização em mapa e exportação para seu aplicativo de navegação favorito.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <img src="img/icone-removebg-preview_resized.png" alt="Inova Tech" class="footer-logo" width="150"
+                        height="150" loading="lazy">
+                    <p class="footer-about">Inova Tech - Soluções tecnológicas para um futuro sustentável.</p>
+
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h3 class="footer-title">Links Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="projetos.html">Projetos</a></li>
+                        <li><a href="inicio.html">Início</a></li>
+                        <li><a href="parceiros.html">Parceiros</a></li>
+                        <li><a href="quemsomos.html">Quem somos</a></li>
+                        <li><a href="#contato">Contato</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3 class="footer-title">Contato</h3>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-map-marker-alt"></i> São Paulo, SP</li>
+                        <li><i class="fas fa-phone"></i> (11) 91234-5678</li>
+                        <li><i class="fas fa-envelope"></i> contato@inovatech.com</li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3 class="footer-title">Newsletter</h3>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Seu e-mail" required>
+                        <button type="submit" class="btn btn-primary">Assinar</button>
+                    </form>
+                    <p class="newsletter-text">Receba nossas novidades e conteúdos exclusivos.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year">2023</span> Inova Tech. Todos os direitos reservados.</p>
+                <div class="footer-legal">
+                    <a href="#">Política de Privacidade</a>
+                    <a href="#">Termos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div class="notification-toast" id="notification">
+        <div class="toast-content">
+            <i class="fas fa-check-circle" id="toastIcon"></i>
+            <p id="notificationMessage"></p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
+    <script src="scripts/route-master.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
