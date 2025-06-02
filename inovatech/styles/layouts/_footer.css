@@ -124,6 +124,7 @@
     display: flex;
     gap: var(--space-sm);
     margin-bottom: var(--space-sm);
+    flex-wrap: wrap;
 }
 
 .newsletter-form input {
