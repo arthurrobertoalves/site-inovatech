@@ -1,6 +1,9 @@
 // Configurações
-const OPENROUTE_API_KEY = '5b3ce3597851110001cf6248923209595967475fb7f10b889e6663a8';
-const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+const CONFIG = {
+    OPENROUTE_API_KEY: '5b3ce3597851110001cf6248923209595967475fb7f10b889e6663a8',
+    MAPBOX_ACCESS_TOKEN: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
+    URBAN_ISSUES_API: 'https://api.cityissues.example.com'
+};
 
 // Elementos do DOM
 const elements = {
@@ -12,6 +15,7 @@ const elements = {
     addAddressBtn: document.getElementById('addAddress'),
     addressList: document.getElementById('addressList'),
     calculateRouteBtn: document.getElementById('calculateRoute'),
+    clearAllBtn: document.getElementById('clearAll'),
     noOrdersMessage: document.getElementById('noOrdersMessage'),
     resultContainer: document.getElementById('resultContainer'),
     routeList: document.getElementById('routeList'),
@@ -23,10 +27,21 @@ const elements = {
     distanceText: document.getElementById('distanceText'),
     timeText: document.getElementById('timeText'),
     routeMap: document.getElementById('routeMap'),
-    notification: document.getElementById('notification'),
-    notificationMessage: document.getElementById('notificationMessage'),
-    toastIcon: document.getElementById('toastIcon')
+    notification: document.createElement('div'), // Será criada dinamicamente
+    notificationMessage: document.createElement('div'),
+    toastIcon: document.createElement('i')
 };
+
+// Criar notificação dinamicamente
+elements.notification.id = 'notification';
+elements.notification.className = 'notification-toast';
+elements.notification.innerHTML = `
+    <div class="toast-content">
+        <i id="toastIcon" class="fas fa-info-circle"></i>
+        <span id="notificationMessage">Mensagem de notificação</span>
+    </div>
+`;
+document.body.appendChild(elements.notification);
 
 // Estado da aplicação
 const state = {
@@ -36,6 +51,8 @@ const state = {
     optimizedRoute: null,
     currentLocation: null,
     geocodingCache: JSON.parse(localStorage.getItem('geocodingCache')) || {},
+    reportedIssues: [],
+    urbanIssues: [],
     efficiencyStats: {
         distanceSaved: 0,
         timeSaved: 0,
@@ -53,7 +70,7 @@ const helpers = {
             warning: 'fa-exclamation-triangle'
         };
         
-        elements.toastIcon.className = `fas ${iconMap[type] || 'fa-info-circle'}`;
+        elements.toastIcon.className = `fas ${iconMap[type]}`;
         elements.notificationMessage.textContent = message;
         elements.notification.className = `notification-toast ${type} show`;
         
@@ -93,7 +110,7 @@ const helpers = {
     }
 };
 
-// Serviços de geocodificação e rotas
+// Serviços
 const services = {
     getAddressFromCEP: async (cep) => {
         const cleanCEP = cep.replace(/\D/g, '');
@@ -113,13 +130,12 @@ const services = {
 
     geocodeAddress: async (address) => {
         if (state.geocodingCache[address]) {
-            console.log('Retornando do cache:', address);
             return state.geocodingCache[address];
         }
         
         try {
             const response = await helpers.fetchWithTimeout(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?country=BR&access_token=${MAPBOX_ACCESS_TOKEN}`
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?country=BR&access_token=${CONFIG.MAPBOX_ACCESS_TOKEN}`
             );
             
             const data = await response.json();
@@ -177,24 +193,69 @@ const services = {
         });
     },
 
+    detectUrbanIssues: async (route) => {
+        try {
+            // Mock data - em produção, usar API real
+            const mockIssues = [
+                {
+                    type: 'broken_traffic_light',
+                    location: { lat: -23.551, lng: -46.634 },
+                    description: 'Semáforo quebrado na Av. Paulista',
+                    severity: 'high'
+                },
+                {
+                    type: 'broken_street_light',
+                    location: { lat: -23.553, lng: -46.632 },
+                    description: 'Poste de iluminação quebrado',
+                    severity: 'medium'
+                }
+            ];
+            
+            return mockIssues.filter(issue => {
+                return route.some(point => {
+                    const distance = services.calculateDistance(
+                        point.lat, point.lng,
+                        issue.location.lat, issue.location.lng
+                    );
+                    return distance < 0.5; // 500 metros
+                });
+            });
+        } catch (error) {
+            console.error('Erro ao detectar problemas urbanos:', error);
+            return [];
+        }
+    },
+
+    reportUrbanIssue: async (issue) => {
+        try {
+            console.log('Reportando problema:', issue);
+            state.reportedIssues.push({
+                ...issue,
+                reportedAt: new Date().toISOString(),
+                status: 'pending'
+            });
+            return true;
+        } catch (error) {
+            console.error('Erro ao reportar problema:', error);
+            return false;
+        }
+    },
+
     calculateRouteEfficiency: (optimizedRoute, originalRoute) => {
         if (!originalRoute || originalRoute.length < 2) return {};
         
-        // Calcula distância original (ordem de entrada)
         const originalDistance = originalRoute.reduce((total, point, index) => {
             if (index === 0) return total;
             const prev = originalRoute[index - 1];
             return total + helpers.calculateDistance(prev.lat, prev.lng, point.lat, point.lng);
         }, 0);
         
-        // Calcula distância otimizada
         const optimizedDistance = optimizedRoute.reduce((total, point, index) => {
             if (index === 0) return total;
             const prev = optimizedRoute[index - 1];
             return total + helpers.calculateDistance(prev.lat, prev.lng, point.lat, point.lng);
         }, 0);
         
-        // Estimativas de economia
         const distanceSaved = originalDistance - optimizedDistance;
         const timeSaved = distanceSaved / 50 * 60; // 50km/h média
         const fuelSaved = distanceSaved * 0.1; // 10L/100km
@@ -338,12 +399,10 @@ const mapManager = {
             maxZoom: 18
         }).addTo(state.map);
         
-        // Adicionar controle de zoom personalizado
         L.control.zoom({
             position: 'topright'
         }).addTo(state.map);
         
-        // Ajustar tamanho do mapa quando o container for exibido
         setTimeout(() => {
             state.map.invalidateSize();
         }, 300);
@@ -352,15 +411,12 @@ const mapManager = {
     showRouteOnMap: (route) => {
         if (!state.map) mapManager.initMap();
         
-        // Limpar rota anterior se existir
         if (state.routeControl) {
             state.map.removeControl(state.routeControl);
         }
         
-        // Converter para waypoints do Leaflet Routing Machine
         const waypoints = route.map(point => L.latLng(point.lat, point.lng));
         
-        // Configuração do visual da rota
         state.routeControl = L.Routing.control({
             waypoints: waypoints,
             routeWhileDragging: false,
@@ -402,20 +458,90 @@ const mapManager = {
             }
         }).addTo(state.map);
         
-        // Ajustar visualização para mostrar toda a rota
         state.map.fitBounds(waypoints, { padding: [50, 50] });
         
-        // Adicionar evento para quando a rota for calculada
         state.routeControl.on('routesfound', function(e) {
             const routes = e.routes;
             const summary = routes[0].summary;
             
-            // Atualizar informações de distância e tempo
             elements.distanceText.textContent = `${(summary.totalDistance / 1000).toFixed(1)} km`;
             elements.timeText.textContent = `${Math.ceil(summary.totalTime / 60)} minutos`;
             
             elements.distanceInfo.style.display = 'inline-flex';
             elements.timeInfo.style.display = 'inline-flex';
+        });
+    },
+
+    addIssueMarkers: (issues) => {
+        if (!state.map) return;
+        
+        const issueIcons = {
+            broken_traffic_light: L.divIcon({
+                className: 'traffic-light-issue-marker',
+                html: '<i class="fas fa-traffic-light"></i>',
+                iconSize: [30, 30]
+            }),
+            broken_street_light: L.divIcon({
+                className: 'street-light-issue-marker',
+                html: '<i class="fas fa-lightbulb"></i>',
+                iconSize: [30, 30]
+            }),
+            default: L.divIcon({
+                className: 'issue-marker',
+                html: '<i class="fas fa-exclamation-triangle"></i>',
+                iconSize: [30, 30]
+            })
+        };
+        
+        issues.forEach(issue => {
+            const icon = issueIcons[issue.type] || issueIcons.default;
+            
+            const marker = L.marker(
+                [issue.location.lat, issue.location.lng],
+                { icon }
+            ).addTo(state.map);
+            
+            marker.bindPopup(`
+                <div class="issue-popup">
+                    <h4>${issue.description}</h4>
+                    <p>Tipo: ${issue.type.replace('_', ' ')}</p>
+                    <p>Severidade: ${issue.severity}</p>
+                    <button class="report-issue-btn" data-type="${issue.type}" 
+                            data-lat="${issue.location.lat}" data-lng="${issue.location.lng}">
+                        Reportar problema
+                    </button>
+                </div>
+            `);
+            
+            if (issue.severity === 'high') {
+                marker.openPopup();
+            }
+        });
+        
+        state.map.on('popupopen', () => {
+            document.querySelectorAll('.report-issue-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    const lat = parseFloat(this.getAttribute('data-lat'));
+                    const lng = parseFloat(this.getAttribute('data-lng'));
+                    
+                    const issue = issues.find(i => 
+                        i.location.lat === lat && 
+                        i.location.lng === lng && 
+                        i.type === type
+                    );
+                    
+                    if (issue) {
+                        services.reportUrbanIssue(issue).then(success => {
+                            if (success) {
+                                helpers.showNotification('Problema reportado com sucesso!', 'success');
+                            } else {
+                                helpers.showNotification('Falha ao reportar problema', 'error');
+                            }
+                        });
+                    }
+                });
+            });
         });
     },
 
@@ -425,7 +551,7 @@ const mapManager = {
             return;
         }
         
-        let routeText = 'ROTA OTIMIZADA - INOVATECH VIAMASTER\n\n';
+        let routeText = 'ROTA OTIMIZADA - VIAVERDE\n\n';
         routeText += `Distância total: ${elements.distanceText.textContent}\n`;
         routeText += `Tempo estimado: ${elements.timeText.textContent}\n\n`;
         
@@ -442,12 +568,19 @@ const mapManager = {
             routeText += `${index === 0 ? 'PARTIDA' : index + '.'} ${point.originalAddress || point.address}\n`;
         });
         
-        // Criar blob e fazer download
+        // Adicionar problemas reportados se houver
+        if (state.urbanIssues.length > 0) {
+            routeText += '\nPROBLEMAS REPORTADOS NA ROTA:\n\n';
+            state.urbanIssues.forEach(issue => {
+                routeText += `• ${issue.description} (${issue.type.replace('_', ' ')})\n`;
+            });
+        }
+        
         const blob = new Blob([routeText], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `rota-inovatech-${new Date().toLocaleDateString('pt-BR')}.txt`;
+        a.download = `rota-viaverde-${new Date().toLocaleDateString('pt-BR')}.txt`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -488,11 +621,9 @@ const routeManager = {
         elements.resultContainer.style.display = 'none';
         
         try {
-            // 1. Obter localização atual
             helpers.showNotification('Obtendo sua localização atual...', 'info');
             state.currentLocation = await services.getCurrentLocation();
             
-            // 2. Geocodificar todos os endereços
             helpers.showNotification('Processando endereços...', 'info');
             const locations = [state.currentLocation];
             
@@ -512,21 +643,33 @@ const routeManager = {
                 throw new Error('Nenhum endereço válido para calcular a rota');
             }
             
-            // 3. Calcular rota não otimizada (para comparação)
             const originalRoute = [state.currentLocation, ...locations.slice(1)];
             
-            // 4. Otimizar rota
             helpers.showNotification('Otimizando rota...', 'info');
             const optimizedRoute = await routeManager.optimizeRoute(locations);
             
-            // 5. Calcular eficiência
             state.efficiencyStats = services.calculateRouteEfficiency(optimizedRoute, originalRoute);
             
-            // 6. Exibir resultados
             state.optimizedRoute = optimizedRoute;
             routeManager.displayRoute(optimizedRoute);
             
-            // 7. Mostrar estatísticas de eficiência
+            // Detectar problemas urbanos
+            helpers.showNotification('Verificando problemas na rota...', 'info');
+            state.urbanIssues = await services.detectUrbanIssues(optimizedRoute);
+            
+            if (state.urbanIssues.length > 0) {
+                const issuesText = state.urbanIssues.map(issue => 
+                    `• ${issue.description} (${issue.type.replace('_', ' ')})`
+                ).join('\n');
+                
+                helpers.showNotification(
+                    `Atenção: ${state.urbanIssues.length} problema(s) detectado(s) na rota:\n${issuesText}`,
+                    'warning'
+                );
+                
+                mapManager.addIssueMarkers(state.urbanIssues);
+            }
+            
             if (state.efficiencyStats.distanceSaved > 0) {
                 const efficiencyMsg = `Rota otimizada! Economia estimada: ${state.efficiencyStats.distanceSaved.toFixed(1)} km, ${Math.ceil(state.efficiencyStats.timeSaved)} minutos`;
                 helpers.showNotification(efficiencyMsg, 'success');
@@ -544,24 +687,22 @@ const routeManager = {
     },
 
     optimizeRoute: async (locations) => {
-        // Se tivermos poucos pontos, usar algoritmo simples
         if (locations.length <= 5) {
             return routeManager.simpleOptimization(locations);
         }
         
-        // Para mais pontos, tentar usar API externa
         try {
             const response = await helpers.fetchWithTimeout('https://api.openrouteservice.org/optimization', {
                 method: 'POST',
                 headers: {
-                    'Authorization': OPENROUTE_API_KEY,
+                    'Authorization': CONFIG.OPENROUTE_API_KEY,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     jobs: locations.slice(1).map((loc, index) => ({
                         id: index + 1,
                         location: [loc.lng, loc.lat],
-                        service: 300 // 5 minutos por parada
+                        service: 300
                     })),
                     vehicles: [{
                         id: 1,
@@ -578,8 +719,7 @@ const routeManager = {
 
             const data = await response.json();
             
-            // Reconstruir rota na ordem otimizada
-            const optimizedOrder = [locations[0]]; // Começa com a origem
+            const optimizedOrder = [locations[0]];
             
             data.routes[0].steps.forEach(step => {
                 if (step.type === "job" && step.id > 0 && step.id <= locations.length - 1) {
@@ -599,13 +739,11 @@ const routeManager = {
         const startingPoint = locations[0];
         const deliveryPoints = locations.slice(1);
         
-        // Algoritmo simples do vizinho mais próximo
         const optimizedDeliveries = [];
         let currentPoint = startingPoint;
         let remainingPoints = [...deliveryPoints];
         
         while (remainingPoints.length > 0) {
-            // Encontrar o ponto mais próximo
             let nearestIndex = 0;
             let nearestDistance = Infinity;
             
@@ -621,7 +759,6 @@ const routeManager = {
                 }
             });
             
-            // Adicionar à rota e atualizar ponto atual
             optimizedDeliveries.push(remainingPoints[nearestIndex]);
             currentPoint = remainingPoints[nearestIndex];
             remainingPoints.splice(nearestIndex, 1);
@@ -646,10 +783,8 @@ const routeManager = {
             elements.routeList.appendChild(li);
         });
         
-        // Mostrar mapa com a rota
         mapManager.showRouteOnMap(route);
         
-        // Mostrar botões de ação
         elements.openMapsBtn.style.display = 'flex';
         elements.exportRouteBtn.style.display = 'flex';
     }
@@ -691,3 +826,104 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }).observe(elements.routeMap, { attributes: true });
 });
+
+// Adicionar estilos CSS dinamicamente
+const addCustomStyles = () => {
+    const style = document.createElement('style');
+    style.textContent = `
+        .notification-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 350px;
+        }
+        
+        .notification-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .notification-toast.info {
+            background-color: #2196F3;
+        }
+        
+        .notification-toast.success {
+            background-color: #4CAF50;
+        }
+        
+        .notification-toast.warning {
+            background-color: #FF9800;
+        }
+        
+        .notification-toast.error {
+            background-color: #F44336;
+        }
+        
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toast-content i {
+            font-size: 20px;
+        }
+        
+        /* Estilos para marcadores de problemas */
+        .traffic-light-issue-marker {
+            color: #d32f2f;
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        .street-light-issue-marker {
+            color: #ffa000;
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        .issue-marker {
+            color: #f44336;
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        .issue-popup {
+            min-width: 200px;
+        }
+        
+        .issue-popup h4 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .report-issue-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .report-issue-btn:hover {
+            background-color: #d32f2f;
+        }
+    `;
+    document.head.appendChild(style);
+};
+
+document.addEventListener('DOMContentLoaded', addCustomStyles);
