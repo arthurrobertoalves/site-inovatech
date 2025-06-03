@@ -10,10 +10,10 @@
 
 .hero-content {
     max-width: 800px;
-    margin: 0 auto;
+    margin: auto auto;
     position: relative;
     z-index: 2;
-    margin-top: 64px
+    margin-bottom: auto;
 }
 
 .hero-title {
