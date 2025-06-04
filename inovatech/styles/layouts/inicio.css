@@ -1,11 +1,14 @@
 /* ===== Seção Hero ===== */
 .hero {
     background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+    background-image: url('/inovatech/img/foto\ msa\ acrilicos.jpg'), 
+    background-size: cover;
     color: white;
     padding: 4rem 1rem;
     text-align: center;
     position: relative;
     overflow: hidden;
+    
 }
 
 .hero-content {
@@ -13,10 +16,7 @@
     margin: auto auto;
     position: relative;
     z-index: 2;
-<<<<<<< HEAD
-=======
     margin-bottom: auto;
->>>>>>> bc704552b3b8b49aa9f37f1b5d7249e2eb6fa9e0
 }
 
 .hero-title {
