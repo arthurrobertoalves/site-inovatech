@@ -46,10 +46,7 @@ function initNavigation({ scrollOffset, scrollThreshold }) {
     });
     
     // Sticky header
-    window.addEventListener('scroll', throttle(() => {
-        header.classList.toggle('scrolled', window.scrollY > scrollThreshold);
-    }, 100));
-    
+
     // Scroll suave
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {

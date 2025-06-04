@@ -13,6 +13,10 @@
     margin: auto auto;
     position: relative;
     z-index: 2;
+<<<<<<< HEAD
+=======
+    margin-bottom: auto;
+>>>>>>> bc704552b3b8b49aa9f37f1b5d7249e2eb6fa9e0
 }
 
 .hero-title {
